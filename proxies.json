@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json.schemastore.org/proxies",
+  "proxies": {
+    "GetPuppies": {
+      "matchCondition": {
+        "route": "/api/puppies",
+        "methods": ["GET"]
+      },
+      "backendUri": "https://build-serverless.azurewebsites.net/api/puppies"
+    },
+    "UpdatePuppy": {
+      "matchCondition": {
+        "route": "/api/puppy/{id}",
+        "methods": ["PUT"]
+      },
+      "backendUri": "https://build-serverless.azurewebsites.net/api/puppy/{id}"
+    },
+    "DeletePuppy": {
+      "matchCondition": {
+        "route": "/api/puppy/{id}",
+        "methods": ["DELETE"]
+      },
+      "backendUri": "https://build-serverless.azurewebsites.net/api/puppy/{id}"
+    },
+    "CreatePuppy": {
+      "matchCondition": {
+        "route": "/api/puppy",
+        "methods": ["POST"]
+      },
+      "backendUri": "https://build-serverless.azurewebsites.net/api/puppy"
+    }
+  }
+}
