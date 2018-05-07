@@ -1,13 +1,27 @@
 const MongoClient = require('mongodb').MongoClient;
+const URL = 'mongodb://build-serverless.documents.azure.com:10255/?ssl=true';
 const auth = {
   user: process.env.CosmosDBUser,
   password: process.env.CosmosDBPass
 };
 module.exports = function(context, req) {
-  context.log('JavaScript HTTP trigger function processed a request.');
-
-  context.res = {
-    status: 200,
-    body: context.bindings.puppies
-  };
+  MongoClient.connect(
+    process.env.CosmosDBURL,
+    { auth: auth },
+    (err, database) => {
+      if (err) throw err;
+      const db = database.db('admin');
+      db
+        .collection('Puppies')
+        .find()
+        .toArray((err, result) => {
+          if (err) throw err;
+          context.res = {
+            body: result
+          };
+          database.close();
+          context.done();
+        });
+    }
+  );
 };
