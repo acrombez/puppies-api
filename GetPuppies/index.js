@@ -1,10 +1,11 @@
 const MongoClient = require('mongodb').MongoClient;
 const URL = 'mongodb://build-serverless.documents.azure.com:10255/?ssl=true';
-const auth = {
-  user: process.env.CosmosDBUser,
-  password: process.env.CosmosDBPass
-};
+
 module.exports = function(context, req) {
+  const auth = {
+    user: process.env.CosmosDBUser,
+    password: process.env.CosmosDBPass
+  };
   MongoClient.connect(
     process.env.CosmosDBURL,
     { auth: auth },
