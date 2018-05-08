@@ -13,6 +13,16 @@
       "type": "http",
       "direction": "out",
       "name": "res"
+    },
+    {
+      "type": "cosmosDB",
+      "name": "puppies",
+      "databaseName": "admin",
+      "collectionName": "Puppies",
+      "sqlQuery": "select * from Puppies p",
+      "createIfNotExists": true,
+      "connectionStringSetting": "CosmosDbConnectionString",
+      "direction": "in"
     }
   ]
 }
