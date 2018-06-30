@@ -1,13 +1,14 @@
 const conn = require('./../shared/utils');
-let client = null;
-module.exports = function(context) {
-  conn.connect(
-    client,
-    query,
-    context
-  );
+const handleError = require('./../shared/error');
+module.exports = function(context, req) {
+  conn
+    .connect()
+    .then(client => {
+      query(client);
+    })
+    .catch(err => handleError(500, err, context));
 
-  function query(client, context) {
+  const query = client => {
     let puppy = ({ id, name, saying } = context.req.body);
     const db = client.db('admin');
 
@@ -28,5 +29,5 @@ module.exports = function(context) {
         context.res = { status: 500, body: err.stack };
         context.done();
       });
-  }
+  };
 };

@@ -1,13 +1,14 @@
 const conn = require('./../shared/utils');
-let client = null;
+const handleError = require('./../shared/error');
 module.exports = function(context, req) {
-  conn.connect(
-    client,
-    query,
-    context
-  );
+  conn
+    .connect()
+    .then(client => {
+      query(client);
+    })
+    .catch(err => handleError(500, err, context));
 
-  function query(client, context) {
+  const query = client => {
     const db = client.db('admin');
     db.collection('Puppies')
       .findOneAndDelete({ id: context.req.params.id })
@@ -18,10 +19,6 @@ module.exports = function(context, req) {
         };
         context.done();
       })
-      .catch(err => {
-        context.log('Failed to query');
-        context.res = { status: 500, body: err.stack };
-        context.done();
-      });
-  }
+      .catch(err => handleError(500, err, context));
+  };
 };

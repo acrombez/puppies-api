@@ -1,26 +1,27 @@
 const MongoClient = require('mongodb').MongoClient;
+let client = null;
 module.exports = {
-  connect: function(client, query, context) {
+  connect: function() {
     const auth = {
       user: process.env.CosmosDBUser,
       password: process.env.CosmosDBPass
     };
-    if (client == null) {
-      MongoClient.connect(
-        process.env.CosmosDBURL,
-        { auth: auth }
-      )
-        .then(_client => {
-          client = _client;
-          query(client, context);
-        })
-        .catch(err => {
-          context.log('Failed to connect');
-          context.res = { status: 500, body: err.stack };
-          context.done();
-        });
-    } else {
-      query(client, context);
-    }
+    return new Promise((resolve, reject) => {
+      if (client == null) {
+        MongoClient.connect(
+          process.env.CosmosDBURL,
+          { auth: auth }
+        )
+          .then(_client => {
+            client = _client;
+            resolve(_client);
+          })
+          .catch(err => {
+            reject(err.status);
+          });
+      } else {
+        resolve(client);
+      }
+    });
   }
 };
