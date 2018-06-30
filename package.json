@@ -9,6 +9,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "mongodb": "^3.0.7"
-  }
+    "mongodb": "^3.0.10"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/simonaco/puppies-api.git"
+  },
+  "bugs": {
+    "url": "https://github.com/simonaco/puppies-api/issues"
+  },
+  "homepage": "https://github.com/simonaco/puppies-api#readme"
 }

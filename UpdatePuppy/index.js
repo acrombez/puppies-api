@@ -1,32 +1,29 @@
-const MongoClient = require('mongodb').MongoClient;
-const auth = {
-  user: process.env.CosmosDBUser,
-  password: process.env.CosmosDBPass
-};
-module.exports = function(context, req) {
-  context.log('JavaScript HTTP trigger function processed a request.');
-  MongoClient.connect(
-    process.env.CosmosDBURL,
-    { auth: auth },
-    (err, database) => {
-      if (err) throw err;
-      const db = database.db('admin');
-      let puppy = ({ id, name, saying } = req.body);
-      let puppyId = req.params.id;
-      db
-        .collection('Puppies')
-        .findOneAndUpdate(
-          { id: puppyId },
-          { set: { id: puppy.id, name: puppy.name, saying: puppy.saying } },
-          (err, puppies) => {
-            if (err) throw err;
-            context.res = {
-              body: puppy
-            };
-            database.close();
-            context.done();
-          }
-        );
-    }
+const conn = require('./../shared/utils');
+let client = null;
+module.exports = function(context) {
+  conn.connect(
+    client,
+    query,
+    context
   );
+  function query(client, context) {
+    const db = client.db('admin');
+    const puppy = ({ id, name, saying } = context.req.body);
+    db.collection('Puppies')
+      .findOneAndUpdate(
+        { id: context.req.params.id },
+        { id: puppy.id, name: puppy.name, saying: puppy.saying }
+      )
+      .then(puppy => {
+        context.res = {
+          body: puppy
+        };
+        context.done();
+      })
+      .catch(err => {
+        context.log('Failed to query');
+        context.res = { status: 500, body: err.stack };
+        context.done();
+      });
+  }
 };
